@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>KaspiNet</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+
+<body>
+    <div id="app">
+        <input v-model="search" type="text">
+        <button @click="addNewText">Добавить</button>
+
+        <table border="1">
+
+            <button :disabled="!editText" @click="deleteAllText">Удалить весь список</button>
+
+
+            <input type="checkbox" v-model="editText">Изменить
+
+            <div><span>count is {{ counter }}</span></div>
+
+            <tr v-for="(todo,index,checked) in todos_filter">
+                <td><input type="checkbox" :value="index" v-model="todo.checked"></td>
+                <td><input :disabled='!editText' :value="todo.text" type="text"></td>
+            </tr>
+
+            <button @click="delTodosItem">Удалить</button>
+
+
+        </table>
+
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                checked: [],
+                counter: 0,
+                search: '',
+                disabled: '',
+                editText: false,
+                todos: [
+                    { text: 'Нурсултан', checked: false },
+                    { text: 'Елдар', checked: false },
+                    { text: 'Мейржан', checked: false },
+                    { text: 'Арнур', checked: false },
+                    { text: 'Диас', checked: false },
+                ]
+            },
+
+            watch: {
+                checked(e) {
+                    console.log(e)
+                },
+            },
+
+            mounted() { },
+
+            created() { },
+
+            computed: {
+
+                todos_filter() {
+
+                    return this.todos.filter(todo => todo.text.toLowerCase() >= todo.text.toLowerCase().match(this.search.toLowerCase())).sort(function (a, b) {
+                        if (a.text.toLowerCase() > b.text.toLowerCase()) {
+                            return 1
+                        } if (a.text.toLowerCase() < b.text.toLowerCase()) {
+                            return -1
+                        }
+                        return 0
+                    })
+
+                },
+
+
+            },
+
+            methods: {
+                addNewText() {
+                    if (this.search.length) {
+                        this.todos.push({ text: this.search })
+                        this.counter++
+                    }
+                    this.search = ''
+                },
+                deleteText(index) {
+                    this.todos.splice(index, 1)
+                    console.log(index)
+                    this.counter--
+                },
+
+                deleteAllText(index) {
+                    this.todos = []
+                    this.counter = 0
+                },
+
+                delTodosItem()  {
+                    this.todos = this.todos.filter(todo => !todo.checked)
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
